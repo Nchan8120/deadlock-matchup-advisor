@@ -1,5 +1,5 @@
 # Hero Matchup Advisor
-A data-driven draft assistant that recommends optimal hero picks based on enemy team composition, matchup win rates, and item build synergies.
+A data-driven draft assistant for Deadlock that recommends optimal hero picks based on enemy team composition, matchup win rates, and item build synergies.
 
 ## Planned Features
 - Hero Draft Input. Select your hero and the enemy team composition
@@ -8,3 +8,5 @@ A data-driven draft assistant that recommends optimal hero picks based on enemy 
 - Custom Scoring System. Combines matchup disadvantage + item synergy into a single score
 - Interactive UI. Clean and responsive interface powered by Streamlit
 - Caching Layer. Reduces API calls by storing responses locally
+
+Data from: https://deadlock-api.com/
