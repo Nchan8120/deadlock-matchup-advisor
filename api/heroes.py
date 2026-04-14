@@ -3,19 +3,20 @@ import httpx
 import json
 from pathlib import Path
 
-BASE_URL = "https://api.deadlock-api.com"
-ASSETS_URL = "https://assets.deadlock-api.com"
-CACHE_PATH = Path("cache/heroes.json")
+ASSETS_URL = "https://assets.deadlock-api.com/v2"
+CACHE_FILE = Path("cache/heroes.json")
 
-def get_heroes(force_refresh=False) -> list[dict]:
-    """Fetch all heroes, using a local cache to avoid repeat calls."""
-    if CACHE_PATH.exists() and not force_refresh:
-        return json.loads(CACHE_PATH.read_text())
-    
-    response = httpx.get(f"{ASSETS_URL}/v2/heroes")
-    response.raise_for_status()
-    heroes = response.json()
-    
-    CACHE_PATH.parent.mkdir(exist_ok=True)
-    CACHE_PATH.write_text(json.dumps(heroes, indent=2))
-    return heroes
+def get_heroes(force_refresh: bool = False) -> list[dict]:
+    if CACHE_FILE.exists() and not force_refresh:
+        return json.loads(CACHE_FILE.read_text())
+
+    heroes = httpx.get(f"{ASSETS_URL}/heroes", timeout=10).raise_for_status().json()
+    playable = [h for h in heroes if h.get("player_selectable") is True]
+
+    CACHE_FILE.parent.mkdir(exist_ok=True)
+    CACHE_FILE.write_text(json.dumps(playable, indent=2))
+    return playable
+
+def hero_name_map(heroes: list[dict]) -> dict[int, str]:
+    """Returns {id: name} for quick lookups."""
+    return {h["id"]: h["name"] for h in heroes}
